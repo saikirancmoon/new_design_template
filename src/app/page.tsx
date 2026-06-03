@@ -45,7 +45,7 @@ const stories = [
 
 const journey = [
   ["01", "Discover", "Find the right campus, board, course pathway, and scholarship route.", "/admission-cities/hyderabad-city.webp"],
-  ["02", "Diagnose", "Understand strengths, weak zones, learning pace, and exam temperament.", "/blog/4.jpg"],
+  ["02", "Learn", "Understand concepts, weak zones, learning pace, and exam temperament.", "/blog/4.jpg"],
   ["03", "Design", "Build a personalized academic routine with mentors and parent check-ins.", "/imageSection/1.webp"],
   ["04", "Practice", "Move through test loops, doubt rooms, revision cycles, and rank strategy.", "/blog/2.png"],
   ["05", "Achieve", "Turn consistent effort into visible academic and personal momentum.", "/imageSection/9.webp"],
@@ -408,6 +408,7 @@ export default function Home() {
   const journeyRef = useRef<HTMLElement>(null);
   const journeyViewportRef = useRef<HTMLDivElement>(null);
   const journeyTrackRef = useRef<HTMLDivElement>(null);
+  const journeyActiveRef = useRef(0);
   const chronicleRef = useRef<HTMLElement>(null);
   const chronicleWindowRef = useRef<HTMLDivElement>(null);
   const chronicleTrackRef = useRef<HTMLDivElement>(null);
@@ -417,6 +418,7 @@ export default function Home() {
   const stackingRef = useRef<HTMLElement>(null);
   const [query, setQuery] = useState("");
   const [activeCity, setActiveCity] = useState(admissionCities[0].city);
+  const [activeJourneyStep, setActiveJourneyStep] = useState(1);
 
   const filteredResults = useMemo(
     () => results.filter((item) => `${item.rank} ${item.name} ${item.track}`.toLowerCase().includes(query.toLowerCase())),
@@ -483,21 +485,122 @@ export default function Home() {
         const journeyTrack = journeyTrackRef.current;
 
         if (journeySection && journeyViewport && journeyTrack) {
-          const travel = () => Math.max(0, journeyTrack.scrollWidth - journeyViewport.offsetWidth);
+          const journeyCards = Array.from(journeyTrack.querySelectorAll<HTMLElement>(".journey-panel"));
+          const journeyImages = Array.from(journeyTrack.querySelectorAll<HTMLElement>(".journey-panel-image"));
+          const progressFill = journeySection.querySelector<HTMLElement>(".journey-progress-fill");
+          const journeyGlow = journeySection.querySelector<HTMLElement>(".journey-active-glow");
+          ScrollTrigger.getById("journey-horizontal")?.kill();
+          ScrollTrigger.getById("journey-story")?.kill();
 
-          gsap.to(journeyTrack, {
-            x: () => -travel(),
-            ease: "none",
+          const applyJourneyDepth = (progress: number) => {
+            const rawIndex = progress * Math.max(journeyCards.length - 1, 1);
+            const activeIndex = Math.round(rawIndex);
+
+            if (activeIndex !== journeyActiveRef.current) {
+              journeyActiveRef.current = activeIndex;
+              setActiveJourneyStep(activeIndex + 1);
+            }
+
+            journeyCards.forEach((card, index) => {
+              const distance = index - rawIndex;
+              const absDistance = Math.abs(distance);
+              const isActive = absDistance <= 0.5;
+              card.style.zIndex = String(index + 1);
+              if (isActive) {
+                gsap.to(card, {
+                  boxShadow: "0 44px 140px rgba(212,165,74,0.24), 0 30px 95px rgba(0,0,0,0.34)",
+                  duration: 0.26,
+                  ease: "power3.out",
+                  overwrite: "auto",
+                });
+              }
+            });
+
+            if (progressFill) {
+              gsap.to(progressFill, {
+                scaleX: progress,
+                duration: 0.24,
+                ease: "power3.out",
+                overwrite: true,
+              });
+            }
+          };
+
+          gsap.set(journeyTrack, { x: 0, force3D: true });
+          gsap.set(journeyCards, {
+            autoAlpha: 0,
+            y: 70,
+            scale: 1.04,
+            filter: "brightness(0.72) blur(2px)",
+            transformPerspective: 1200,
+            transformOrigin: "50% 50%",
+            force3D: true,
+          });
+          gsap.set(journeyCards[0], {
+            autoAlpha: 1,
+            y: 0,
+            scale: 1,
+            filter: "brightness(1) blur(0px)",
+            zIndex: 1,
+          });
+          gsap.set(journeyImages, { scale: 1.08, yPercent: 0, force3D: true });
+          applyJourneyDepth(0);
+
+          const journeyTimeline = gsap.timeline({
             scrollTrigger: {
+              id: "journey-story",
               trigger: journeySection,
               pin: true,
               pinSpacing: true,
-              scrub: 0.62,
+              scrub: 0.72,
               start: "top top",
-              end: () => `+=${travel()}`,
+              end: () => `+=${Math.max(window.innerHeight * (journeyCards.length - 1) * 0.82, window.innerHeight * 2.8)}`,
               invalidateOnRefresh: true,
               anticipatePin: 1,
+              onUpdate: (self) => applyJourneyDepth(self.progress),
+              onRefresh: (self) => applyJourneyDepth(self.progress),
             },
+          });
+
+          if (journeyGlow) {
+            journeyTimeline.to(journeyGlow, { xPercent: 16, yPercent: -8, scale: 1.12, ease: "none", duration: journeyCards.length - 1 }, 0);
+          }
+
+          journeyCards.forEach((card, index) => {
+            if (index === 0) return;
+            const previousCard = journeyCards[index - 1];
+            const currentImage = journeyImages[index];
+            const previousImage = journeyImages[index - 1];
+            const at = index - 1;
+
+            journeyTimeline.to(previousCard, {
+              autoAlpha: 0.08,
+              y: -34,
+              scale: 0.9,
+              filter: "brightness(0.5) blur(4px)",
+              duration: 0.82,
+              ease: "power3.out",
+            }, at);
+            journeyTimeline.fromTo(card, {
+              autoAlpha: 0,
+              y: 92,
+              scale: 1.045,
+              filter: "brightness(0.78) blur(2px)",
+              zIndex: index + 2,
+            }, {
+              autoAlpha: 1,
+              y: 0,
+              scale: 1,
+              filter: "brightness(1) blur(0px)",
+              duration: 0.82,
+              ease: "power3.out",
+            }, at + 0.08);
+            if (currentImage) {
+              journeyTimeline.fromTo(currentImage, { scale: 1.14, yPercent: 5 }, { scale: 1.04, yPercent: 0, duration: 0.82, ease: "power3.out" }, at + 0.08);
+            }
+            if (previousImage) {
+              journeyTimeline.to(previousImage, { yPercent: -5, scale: 1.12, duration: 0.82, ease: "power3.out" }, at);
+            }
           });
         }
 
@@ -913,6 +1016,7 @@ export default function Home() {
 
       {/* Journey */}
       <section ref={journeyRef} id="journey" className="journey-stage bg-[#0F2744] px-5 py-16 text-[#F8F5EE] sm:px-8 lg:px-12">
+        <div className="journey-active-glow" />
         <div className="journey-copy mx-auto w-full max-w-7xl">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
@@ -922,27 +1026,39 @@ export default function Home() {
               </h2>
             </div>
             <p className="journey-hint max-w-sm text-sm font-bold uppercase tracking-[0.22em] text-[#D4A64A]/80">
-              Wheel scroll moves the cards
+              Wheel scroll reveals each step
             </p>
           </div>
         </div>
 
         <div ref={journeyViewportRef} className="journey-viewport mx-auto mt-10 w-full max-w-7xl overflow-hidden">
-          <div ref={journeyTrackRef} className="journey-track flex gap-5">
+          <div ref={journeyTrackRef} className="journey-track">
             {journey.map(([step, title, text, image]) => (
-              <article key={title} className="journey-panel grid shrink-0 overflow-hidden rounded-[26px] border border-white/12 bg-[#F8F5EE] text-[#0F2744] shadow-[0_22px_70px_rgba(0,0,0,0.18)]">
-                <div className="relative min-h-44 overflow-hidden">
-                  <Image src={image} alt={`${title} student journey`} fill sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 360px" className="object-cover transition duration-700 hover:scale-105" />
+              <article key={title} className="journey-panel grid overflow-hidden rounded-[30px] border border-white/14 bg-[#F8F5EE] text-[#0F2744] shadow-[0_30px_95px_rgba(0,0,0,0.24)]">
+                <div className="journey-panel-image relative min-h-72 overflow-hidden">
+                  <Image src={image} alt={`${title} student journey`} fill sizes="(max-width: 1023px) 100vw, 1120px" className="object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0F2744]/38 to-transparent" />
                 </div>
-                <div className="flex min-h-64 flex-col p-5">
-                  <span className="font-display text-5xl font-black tracking-[-0.07em] text-[#D4A64A]">{step}</span>
-                  <h3 className="font-display mt-5 text-2xl font-black tracking-[-0.045em]">{title}</h3>
-                  <p className="mt-4 text-sm leading-6 text-[#0F2744]/62">{text}</p>
+                <div className="journey-panel-copy flex flex-col justify-center p-6 sm:p-8 lg:p-10">
+                  <span className="font-display text-6xl font-black tracking-[-0.07em] text-[#D4A64A]">{step}</span>
+                  <h3 className="font-display mt-5 text-4xl font-black tracking-[-0.055em]">{title}</h3>
+                  <p className="mt-5 max-w-xl text-base leading-7 text-[#0F2744]/64">{text}</p>
                 </div>
               </article>
             ))}
           </div>
+        </div>
+
+        <div className="journey-progress mx-auto mt-8 flex w-full max-w-7xl items-center gap-5">
+          <span className="font-display text-sm font-black text-[#D4A54A]">
+            {String(activeJourneyStep).padStart(2, "0")}
+          </span>
+          <div className="journey-progress-line">
+            <span className="journey-progress-fill" />
+          </div>
+          <span className="text-xs font-black uppercase tracking-[0.22em] text-[#F8F5EE]/50">
+            {String(journey.length).padStart(2, "0")}
+          </span>
         </div>
       </section>
 

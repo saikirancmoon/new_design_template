@@ -431,14 +431,12 @@ input {
 .journey-panel {
   transition:
     border-color 320ms ease,
-    box-shadow 320ms ease,
-    transform 320ms ease;
+    box-shadow 320ms ease;
 }
 
 .journey-panel:hover {
   border-color: rgba(212, 166, 74, 0.36);
   box-shadow: 0 22px 70px rgba(0, 0, 0, 0.18);
-  transform: translateY(-5px);
 }
 
 .floating-badge:hover,
@@ -741,11 +739,12 @@ input {
 
 .journey-stage {
   background:
-    radial-gradient(circle at 18% 0%, rgba(212, 166, 74, 0.2), transparent 28%),
-    radial-gradient(circle at 88% 72%, rgba(122, 138, 90, 0.25), transparent 30%),
-    linear-gradient(135deg, var(--navy), #07182a);
+    radial-gradient(circle at 22% 0%, rgba(212, 165, 74, 0.22), transparent 26%),
+    radial-gradient(circle at 78% 74%, rgba(122, 138, 90, 0.18), transparent 30%),
+    linear-gradient(135deg, #041b35 0%, #08213d 54%, #061a2e 100%);
   position: relative;
   overflow: hidden;
+  isolation: isolate;
 }
 
 .journey-stage::before {
@@ -761,6 +760,20 @@ input {
   opacity: 0.72;
 }
 
+.journey-active-glow {
+  pointer-events: none;
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  z-index: 0;
+  width: min(42rem, 58vw);
+  height: min(26rem, 44vh);
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(212, 165, 74, 0.2), rgba(212, 165, 74, 0.08) 38%, transparent 70%);
+  filter: blur(34px);
+  transform: translate(-50%, -50%);
+}
+
 .journey-copy {
   position: relative;
   z-index: 1;
@@ -773,16 +786,53 @@ input {
   overflow: hidden;
   flex: 1 1 auto;
   min-height: 0;
+  perspective: 1200px;
 }
 
 .journey-track {
-  width: max-content;
+  position: relative;
+  width: 100%;
   will-change: transform;
+  transform: translate3d(0, 0, 0);
 }
 
 .journey-panel {
-  width: clamp(19rem, 30vw, 24rem);
-  min-height: min(52vh, 460px);
+  width: 100%;
+  min-height: min(60vh, 560px);
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  will-change: transform, filter, box-shadow;
+}
+
+.journey-panel-image,
+.journey-panel-image img {
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+.journey-progress {
+  position: relative;
+  z-index: 1;
+}
+
+.journey-progress-line {
+  position: relative;
+  height: 2px;
+  flex: 1;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(248, 245, 238, 0.18);
+}
+
+.journey-progress-fill {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #d4a54a, #f8f5ee);
+  box-shadow: 0 0 22px rgba(212, 165, 74, 0.45);
+  transform: scaleX(0);
+  transform-origin: left center;
 }
 
 .learning-bridge-section {
@@ -1564,6 +1614,10 @@ input {
     min-height: 0;
   }
 
+  .journey-progress {
+    display: none;
+  }
+
   .chronicle-scroll-window {
     height: auto;
     overflow: visible;
@@ -1627,17 +1681,22 @@ input {
   }
 
   .journey-viewport {
-    width: min(100%, 1280px);
+    width: min(100%, 1180px);
+    height: min(58vh, 560px);
   }
 
   .journey-track {
+    position: relative;
     height: 100%;
-    align-items: stretch;
   }
 
   .journey-panel {
-    height: min(54vh, 500px);
-    min-height: 390px;
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(380px, 0.8fr);
+    height: 100%;
+    min-height: 0;
   }
 
   .chronicle-section {
