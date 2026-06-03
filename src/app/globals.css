@@ -22,6 +22,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sora);
+  --font-display: var(--font-plus-jakarta-sans);
   --font-mono: var(--font-geist-mono);
 }
 
@@ -40,6 +41,7 @@ body {
   background: var(--ivory);
   color: var(--navy);
   font-family: var(--font-sora), var(--font-montserrat), Arial, sans-serif;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4a64a' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
 a {
@@ -57,6 +59,17 @@ input {
   color: var(--navy);
 }
 
+/* Apply display font to major headings globally */
+.premium-world h2,
+.premium-world h3,
+.hero-title,
+.campus-heading,
+.program-heading,
+.program-card-title,
+.font-display {
+  font-family: var(--font-plus-jakarta-sans);
+}
+
 .premium-world {
   background:
     radial-gradient(circle at 12% 4%, rgba(212, 166, 74, 0.18), transparent 24%),
@@ -64,6 +77,96 @@ input {
     linear-gradient(180deg, var(--ivory) 0%, var(--cream) 36%, var(--stone) 100%);
   isolation: isolate;
   position: relative;
+}
+
+.floating-accents::before,
+.floating-accents::after {
+  position: absolute;
+  content: "";
+  border-radius: 999px;
+  filter: blur(80px);
+  opacity: 0.18;
+  animation: floatAccent 22s ease-in-out infinite alternate;
+}
+
+.floating-accents::before {
+  left: -15%;
+  top: -10%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, var(--terracotta), transparent 70%);
+}
+
+.floating-accents::after {
+  right: -10%;
+  bottom: -15%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, var(--gold), transparent 70%);
+  animation-delay: -8s;
+  animation-duration: 26s;
+}
+
+.academic-motif {
+  --motif-index: 0;
+  position: absolute;
+  left: calc(7vw + (var(--motif-index) * 11vw));
+  top: 18vh;
+  display: grid;
+  min-width: 3.4rem;
+  height: 3.4rem;
+  place-items: center;
+  border: 1px solid rgba(15, 39, 68, 0.12);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 35% 28%, rgba(248, 245, 238, 0.74), transparent 34%),
+    rgba(248, 244, 236, 0.22);
+  color: rgba(15, 39, 68, 0.34);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.52);
+  transform: rotate(calc((var(--motif-index) - 3) * 7deg));
+  animation: motifFloat 16s ease-in-out infinite alternate;
+  animation-delay: calc(var(--motif-index) * -1.7s);
+  backdrop-filter: blur(10px);
+}
+
+.academic-motif:nth-child(odd) {
+  color: rgba(201, 123, 99, 0.34);
+}
+
+.academic-motif:nth-child(3n) {
+  color: rgba(122, 138, 90, 0.36);
+}
+
+.academic-motif:nth-child(2) {
+  top: 36vh;
+}
+
+.academic-motif:nth-child(3) {
+  top: 64vh;
+}
+
+.academic-motif:nth-child(4) {
+  top: 24vh;
+}
+
+.academic-motif:nth-child(5) {
+  top: 76vh;
+}
+
+.academic-motif:nth-child(6) {
+  top: 46vh;
+}
+
+.academic-motif:nth-child(7) {
+  top: 14vh;
+}
+
+.academic-motif:nth-child(8) {
+  top: 58vh;
 }
 
 .premium-world::before {
@@ -80,19 +183,40 @@ input {
   animation: ambientMesh 16s ease-in-out infinite alternate;
 }
 
+.premium-world::after {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  content: "";
+  background:
+    radial-gradient(circle at 65% 22%, rgba(201, 123, 99, 0.08), transparent 30%),
+    radial-gradient(circle at 30% 70%, rgba(212, 166, 74, 0.1), transparent 28%);
+  opacity: 0.75;
+  animation: ambientMesh 20s ease-in-out infinite alternate-reverse;
+}
+
 .premium-world > section,
 .premium-world > footer {
   position: relative;
   z-index: 1;
 }
 
-
 .premium-world h2 {
-  font-size: clamp(2rem, 4.6vw, 4.35rem);
+  font-size: clamp(1.85rem, 3.35vw, 3.45rem);
+  line-height: 1.04;
+  letter-spacing: -0.045em;
 }
 
 .premium-world h3 {
-  font-size: clamp(1.45rem, 2.8vw, 2.9rem);
+  font-size: clamp(1.28rem, 2.1vw, 2.35rem);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.premium-world > section {
+  padding-top: clamp(4rem, 7vw, 6.5rem);
+  padding-bottom: clamp(4rem, 7vw, 6.5rem);
 }
 
 .section-kicker {
@@ -120,33 +244,6 @@ input {
   animation-timeline: scroll(root);
 }
 
-.cursor-aura {
-  background:
-    radial-gradient(circle, rgba(212, 166, 74, 0.22), rgba(201, 123, 99, 0.1) 38%, transparent 68%);
-  filter: blur(8px);
-}
-
-@media (pointer: fine) {
-  .premium-world::after {
-    pointer-events: none;
-    position: fixed;
-    left: var(--cursor-x);
-    top: var(--cursor-y);
-    z-index: 90;
-    width: 24px;
-    height: 24px;
-    content: "";
-    border: 1px solid rgba(212, 166, 74, 0.82);
-    border-radius: 999px;
-    mix-blend-mode: difference;
-    transform: translate(-50%, -50%);
-    transition:
-      width 180ms ease,
-      height 180ms ease,
-      opacity 180ms ease;
-  }
-}
-
 .cinematic-hero::after {
   pointer-events: none;
   position: absolute;
@@ -157,9 +254,9 @@ input {
 }
 
 .hero-title {
-  font-size: clamp(2.35rem, 3.45vw, 3.85rem);
-  line-height: 0.98;
-  letter-spacing: -0.052em;
+  font-size: clamp(2.25rem, 3.15vw, 3.45rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
 }
 
 .hero-signal-board {
@@ -339,9 +436,9 @@ input {
 }
 
 .journey-panel:hover {
-  border-color: rgba(212, 166, 74, 0.42);
-  box-shadow: 0 38px 130px rgba(0, 0, 0, 0.3);
-  transform: translateY(-8px);
+  border-color: rgba(212, 166, 74, 0.36);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.18);
+  transform: translateY(-5px);
 }
 
 .floating-badge:hover,
@@ -368,6 +465,10 @@ input {
   animation: marquee 34s linear infinite;
 }
 
+.marquee-band {
+  overflow: hidden;
+}
+
 .premium-scroll {
   scrollbar-width: none;
 }
@@ -378,10 +479,20 @@ input {
 
 .highlight-rail {
   background:
-    radial-gradient(circle at 18% 12%, rgba(220, 201, 163, 0.6), transparent 24%),
+    radial-gradient(circle at 12% 16%, rgba(212, 166, 74, 0.2), transparent 26%),
+    radial-gradient(circle at 88% 42%, rgba(122, 138, 90, 0.16), transparent 24%),
     linear-gradient(180deg, var(--ivory), var(--cream));
   position: relative;
   overflow: hidden;
+}
+
+.highlight-rail .metric-tile {
+  border-radius: 0;
+  border-width: 0 0 1px;
+  border-color: rgba(15, 39, 68, 0.1);
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .highlight-rail::after,
@@ -442,7 +553,7 @@ input {
     radial-gradient(circle at 12% 20%, rgba(212, 166, 74, 0.18), transparent 25%),
     radial-gradient(circle at 88% 12%, rgba(201, 123, 99, 0.12), transparent 28%),
     linear-gradient(180deg, #efe7db 0%, #f8f4ec 52%, #eaeedc 100%);
-  min-height: 100vh;
+  min-height: auto;
   position: relative;
   overflow: hidden;
 }
@@ -465,18 +576,18 @@ input {
 
 .chronicle-scroll-window {
   position: relative;
-  height: min(74vh, 760px);
-  overflow: hidden;
+  height: auto;
+  overflow: visible;
   border-radius: 34px;
-  mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 88%, transparent);
+  mask-image: none;
 }
 
 .chronicle-track {
   position: relative;
   display: grid;
   gap: 1.25rem;
-  padding: 1rem 0 7rem;
-  will-change: transform;
+  padding: 0;
+  will-change: auto;
 }
 
 .chronicle-track::before {
@@ -495,7 +606,7 @@ input {
   grid-template-columns: 8.5rem minmax(0, 1fr);
   gap: 1.5rem;
   align-items: stretch;
-  min-height: 190px;
+  min-height: 160px;
   border-radius: 30px;
   padding: 0.75rem;
   transition:
@@ -530,7 +641,7 @@ input {
   border-radius: 24px;
   background:
     linear-gradient(135deg, rgba(248, 244, 236, 0.78), rgba(234, 238, 220, 0.58));
-  padding: 1.45rem;
+  padding: 1.25rem;
   backdrop-filter: blur(18px);
 }
 
@@ -546,10 +657,10 @@ input {
   margin-top: 0.7rem;
   max-width: 38rem;
   color: var(--navy);
-  font-size: clamp(1.35rem, 2.25vw, 2.35rem);
+  font-size: clamp(1.25rem, 1.8vw, 2rem);
   font-weight: 950;
-  letter-spacing: -0.05em;
-  line-height: 1;
+  letter-spacing: -0.045em;
+  line-height: 1.06;
 }
 
 .chronicle-copy span {
@@ -625,7 +736,7 @@ input {
 
 .story-row {
   border-top: 1px solid rgba(15, 39, 68, 0.09);
-  padding-top: 4rem;
+  padding-top: 3rem;
 }
 
 .journey-stage {
@@ -633,6 +744,80 @@ input {
     radial-gradient(circle at 18% 0%, rgba(212, 166, 74, 0.2), transparent 28%),
     radial-gradient(circle at 88% 72%, rgba(122, 138, 90, 0.25), transparent 30%),
     linear-gradient(135deg, var(--navy), #07182a);
+  position: relative;
+  overflow: hidden;
+}
+
+.journey-stage::before {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  content: "";
+  background-image:
+    radial-gradient(circle at 12% 20%, rgba(212, 166, 74, 0.18) 0 2px, transparent 2.6px),
+    radial-gradient(circle at 78% 24%, rgba(248, 245, 238, 0.18) 0 1px, transparent 1.8px),
+    linear-gradient(135deg, transparent 0 48%, rgba(248, 245, 238, 0.055) 48% 49%, transparent 49% 100%);
+  background-size: 180px 180px, 120px 120px, 260px 260px;
+  opacity: 0.72;
+}
+
+.journey-copy {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+}
+
+.journey-viewport {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.journey-track {
+  width: max-content;
+  will-change: transform;
+}
+
+.journey-panel {
+  width: clamp(19rem, 30vw, 24rem);
+  min-height: min(52vh, 460px);
+}
+
+.learning-bridge-section {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 14% 24%, rgba(201, 123, 99, 0.13), transparent 25%),
+    radial-gradient(circle at 82% 14%, rgba(212, 166, 74, 0.18), transparent 27%),
+    linear-gradient(180deg, var(--cream), var(--stone));
+}
+
+@media (min-width: 1024px) {
+  .learning-bridge-section {
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.learning-bridge-section::before {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  content: "";
+  background-image:
+    linear-gradient(rgba(15, 39, 68, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 39, 68, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 30% 22%, rgba(15, 39, 68, 0.18) 0 2px, transparent 2.6px);
+  background-size: 84px 84px, 84px 84px, 190px 190px;
+  mask-image: radial-gradient(circle at center, #000, transparent 82%);
+}
+
+.learning-bridge-section > div {
+  position: relative;
+  z-index: 1;
 }
 
 .results-section {
@@ -668,7 +853,7 @@ input {
 }
 
 .campus-heading {
-  font-size: clamp(2.25rem, 4.6vw, 4.6rem);
+  font-size: clamp(1.9rem, 3.35vw, 3.45rem);
 }
 
 .campus-command {
@@ -676,6 +861,12 @@ input {
     linear-gradient(135deg, rgba(248, 244, 236, 0.86), rgba(234, 238, 220, 0.72)),
     radial-gradient(circle at 82% 18%, rgba(212, 166, 74, 0.2), transparent 34%);
   box-shadow: 0 34px 110px rgba(15, 39, 68, 0.1);
+}
+
+.campus-story-window {
+  height: clamp(470px, 58vh, 620px);
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, #000 0%, #000 86%, transparent 100%);
 }
 
 .campus-command-orbit {
@@ -724,6 +915,7 @@ input {
 
 .campus-field {
   padding: 0.5rem 0 0.5rem 1.35rem;
+  will-change: transform;
 }
 
 .campus-path-line {
@@ -767,7 +959,7 @@ input {
 
 .campus-node-media {
   position: relative;
-  min-height: 210px;
+  min-height: 180px;
   overflow: hidden;
   border-radius: 999px 34px 999px 34px;
   box-shadow: 0 22px 70px rgba(15, 39, 68, 0.14);
@@ -788,7 +980,7 @@ input {
 .campus-node-copy h3 {
   max-width: 24rem;
   color: var(--navy);
-  font-size: clamp(1.8rem, 3vw, 3.05rem);
+  font-size: clamp(1.45rem, 2.3vw, 2.45rem);
   font-weight: 950;
   letter-spacing: -0.055em;
   line-height: 0.98;
@@ -824,7 +1016,6 @@ input {
   100% {
     transform: translate3d(0, 0, 0) rotate(0deg);
   }
-
   50% {
     transform: translate3d(-1.2rem, 1rem, 0) rotate(14deg);
   }
@@ -846,6 +1037,105 @@ input {
     linear-gradient(180deg, var(--stone), var(--cream));
   position: relative;
   overflow: hidden;
+}
+
+.stacking-section {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(212, 166, 74, 0.22), transparent 26%),
+    radial-gradient(circle at 82% 18%, rgba(122, 138, 90, 0.18), transparent 28%),
+    linear-gradient(135deg, #07182a 0%, var(--navy) 54%, #102f2a 100%);
+}
+
+.stacking-bg {
+  background-image:
+    radial-gradient(circle at 12% 26%, rgba(248, 245, 238, 0.18) 0 2px, transparent 2.8px),
+    radial-gradient(circle at 72% 16%, rgba(212, 166, 74, 0.22) 0 2px, transparent 2.8px),
+    linear-gradient(135deg, transparent 0 47%, rgba(248, 245, 238, 0.06) 47% 48%, transparent 48% 100%),
+    url("/page-texture-bg/logotexture.png");
+  background-size:
+    150px 150px,
+    220px 220px,
+    280px 280px,
+    520px auto;
+  background-position:
+    0 0,
+    80px 20px,
+    0 0,
+    center;
+  opacity: 0.32;
+  will-change: transform;
+}
+
+.stacking-copy {
+  position: relative;
+  z-index: 12;
+}
+
+.stacking-deck {
+  position: relative;
+  min-height: min(68vh, 680px);
+}
+
+.stack-card {
+  --stack-index: 0;
+  position: relative;
+  display: grid;
+  min-height: 520px;
+  overflow: hidden;
+  border: 1px solid rgba(248, 245, 238, 0.18);
+  border-radius: 34px;
+  background:
+    linear-gradient(135deg, rgba(248, 244, 236, 0.92), rgba(234, 238, 220, 0.84));
+  box-shadow:
+    0 38px 120px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.68);
+  transform-origin: 50% 0%;
+  will-change: transform, filter;
+}
+
+.stack-card-media {
+  position: relative;
+  min-height: 250px;
+  overflow: hidden;
+}
+
+.stack-card-copy {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1.5rem;
+  align-items: end;
+  padding: 1.5rem;
+}
+
+.stack-card-stat {
+  min-width: 9rem;
+  border-left: 1px solid rgba(15, 39, 68, 0.12);
+  padding-left: 1.2rem;
+}
+
+.stack-card-stat strong {
+  display: block;
+  color: var(--terracotta);
+  font-family: var(--font-plus-jakarta-sans);
+  font-size: clamp(2.2rem, 4vw, 3.8rem);
+  font-weight: 950;
+  letter-spacing: -0.07em;
+  line-height: 0.9;
+}
+
+.stack-card-stat span {
+  display: block;
+  margin-top: 0.75rem;
+  max-width: 9rem;
+  color: rgba(15, 39, 68, 0.58);
+  font-size: 0.74rem;
+  font-weight: 850;
+  line-height: 1.45;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
 }
 
 .premium-map,
@@ -890,12 +1180,12 @@ input {
 }
 
 .program-heading {
-  font-size: clamp(2rem, 4.4vw, 4.25rem);
+  font-size: clamp(1.85rem, 3.3vw, 3.35rem);
 }
 
 .program-card-title {
-  font-size: clamp(2.05rem, 3.4vw, 3.65rem);
-  line-height: 0.98;
+  font-size: clamp(1.8rem, 2.8vw, 2.9rem);
+  line-height: 1.02;
 }
 
 .visual-moments {
@@ -1037,23 +1327,23 @@ input {
 
 @media (max-width: 768px) {
   .premium-world h2 {
-    font-size: clamp(1.85rem, 8.8vw, 2.85rem);
-    line-height: 1.04;
-    letter-spacing: -0.052em;
+    font-size: clamp(1.65rem, 7.4vw, 2.35rem);
+    line-height: 1.08;
+    letter-spacing: -0.04em;
   }
 
   .premium-world h3 {
-    font-size: clamp(1.35rem, 6.6vw, 2.05rem);
+    font-size: clamp(1.2rem, 5.4vw, 1.75rem);
   }
 
   .cinematic-hero {
-    min-height: 92vh;
+    min-height: 86vh;
     padding-top: 6.5rem;
   }
 
   .cinematic-hero h1 {
-    font-size: clamp(2.25rem, 9.4vw, 3rem);
-    line-height: 0.95;
+    font-size: clamp(2rem, 8.4vw, 2.65rem);
+    line-height: 1;
   }
 
   .hero-title {
@@ -1094,16 +1384,16 @@ input {
 
   .journey-panel {
     height: auto !important;
-    min-height: 620px;
+    min-height: 0;
   }
 
   .journey-panel h3 {
-    margin-top: 1.5rem;
+    margin-top: 1.1rem;
   }
 
   .journey-panel p {
-    font-size: 0.94rem;
-    line-height: 1.65;
+    font-size: 0.88rem;
+    line-height: 1.6;
   }
 
   .campus-heading {
@@ -1132,7 +1422,7 @@ input {
 
   .campus-node-media {
     grid-column: 2;
-    min-height: 220px;
+    min-height: 190px;
     border-radius: 28px 80px 28px 80px;
   }
 
@@ -1154,15 +1444,15 @@ input {
   }
 
   .program-heading {
-    font-size: clamp(2rem, 9vw, 2.95rem);
+    font-size: clamp(1.75rem, 7.4vw, 2.35rem);
   }
 
   .program-card-title {
-    font-size: clamp(2rem, 10vw, 2.8rem);
+    font-size: clamp(1.65rem, 7.4vw, 2.25rem);
   }
 
   .program-section article {
-    height: 430px;
+    height: 360px;
   }
 
   .stats-pill {
@@ -1181,16 +1471,16 @@ input {
   .admission-section,
   .ai-section,
   .visual-moments {
-    padding-top: 4rem;
-    padding-bottom: 4rem;
+    padding-top: 3.5rem;
+    padding-bottom: 3.5rem;
   }
 
   .visual-moments article {
-    min-height: 320px !important;
+    min-height: 260px !important;
   }
 
   .admission-section .min-h-\[460px\] {
-    min-height: 360px;
+    min-height: 300px;
   }
 
   .footer-gallery-marquee {
@@ -1206,18 +1496,21 @@ input {
   }
 
   .chronicle-scroll-window {
-    height: 72vh;
+    height: auto;
     border-radius: 26px;
+    overflow: visible;
+    mask-image: none;
   }
 
   .chronicle-track {
-    padding-bottom: 5rem;
+    padding-bottom: 0;
+    will-change: auto;
   }
 
   .chronicle-item {
     grid-template-columns: 3.25rem minmax(0, 1fr);
     gap: 0.85rem;
-    min-height: 220px;
+    min-height: 0;
     padding: 0.35rem 0;
   }
 
@@ -1254,6 +1547,146 @@ input {
   }
 }
 
+@media (max-width: 1023px) {
+  .journey-viewport {
+    overflow: visible;
+  }
+
+  .journey-track {
+    display: grid;
+    width: auto;
+    gap: 1rem;
+    will-change: auto;
+  }
+
+  .journey-panel {
+    width: 100%;
+    min-height: 0;
+  }
+
+  .chronicle-scroll-window {
+    height: auto;
+    overflow: visible;
+    mask-image: none;
+  }
+
+  .chronicle-track {
+    will-change: auto;
+  }
+
+  .campus-story-window {
+    height: auto;
+    overflow: visible;
+    mask-image: none;
+  }
+
+  .campus-field {
+    will-change: auto;
+  }
+
+  .stacking-section {
+    min-height: auto;
+  }
+
+  .stacking-deck {
+    display: grid;
+    gap: 1rem;
+    min-height: auto;
+  }
+
+  .stack-card {
+    min-height: 0;
+  }
+
+  .stack-card-copy {
+    grid-template-columns: 1fr;
+  }
+
+  .stack-card-stat {
+    border-left: 0;
+    border-top: 1px solid rgba(15, 39, 68, 0.12);
+    padding-left: 0;
+    padding-top: 1rem;
+  }
+
+  .chronicle-section {
+    min-height: auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .journey-stage {
+    min-height: 100svh;
+    height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: clamp(6rem, 10vh, 7.5rem);
+    padding-bottom: clamp(2rem, 3vh, 3rem);
+    overflow: hidden;
+  }
+
+  .journey-viewport {
+    width: min(100%, 1280px);
+  }
+
+  .journey-track {
+    height: 100%;
+    align-items: stretch;
+  }
+
+  .journey-panel {
+    height: min(54vh, 500px);
+    min-height: 390px;
+  }
+
+  .chronicle-section {
+    min-height: 100svh;
+    height: 100svh;
+    display: flex;
+    align-items: center;
+  }
+
+  .chronicle-section > div {
+    width: 100%;
+  }
+
+  .chronicle-scroll-window {
+    height: clamp(520px, 68vh, 700px);
+    overflow: hidden;
+    mask-image: linear-gradient(to bottom, #000 0%, #000 88%, transparent 100%);
+  }
+
+  .chronicle-track {
+    will-change: transform;
+  }
+
+  .campus-section {
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+  }
+
+  .campus-atlas {
+    width: 100%;
+  }
+
+  .stacking-section {
+    height: 100svh;
+    display: flex;
+    align-items: center;
+  }
+
+  .stacking-section > div:not(.stacking-bg) {
+    width: 100%;
+  }
+
+  .stack-card {
+    position: absolute;
+    inset: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -1269,7 +1702,6 @@ input {
   from {
     transform: translateX(0);
   }
-
   to {
     transform: translateX(-50%);
   }
@@ -1279,7 +1711,6 @@ input {
   from {
     transform: translateX(0);
   }
-
   to {
     transform: translateX(-50%);
   }
@@ -1291,7 +1722,6 @@ input {
       0 0,
       32px 36px;
   }
-
   to {
     background-position:
       320px 180px,
@@ -1304,7 +1734,6 @@ input {
     opacity: 0.65;
     transform: scale(0.72);
   }
-
   100% {
     opacity: 0;
     transform: scale(1.7);
@@ -1316,7 +1745,6 @@ input {
     opacity: 0.8;
     transform: scale(0.75);
   }
-
   100% {
     opacity: 0;
     transform: scale(1.8);
@@ -1328,7 +1756,6 @@ input {
   42% {
     transform: translateX(-70%);
   }
-
   72%,
   100% {
     transform: translateX(70%);
@@ -1340,7 +1767,6 @@ input {
     opacity: 0.85;
     transform: translate(-50%, -50%) scale(0.76);
   }
-
   100% {
     opacity: 0;
     transform: translate(-50%, -50%) scale(1.9);
@@ -1352,15 +1778,27 @@ input {
     opacity: 0.72;
     transform: translate3d(-1.5%, -1%, 0) scale(1);
   }
-
   50% {
     opacity: 0.96;
     transform: translate3d(1%, 1.5%, 0) scale(1.04);
   }
-
   100% {
     opacity: 0.82;
     transform: translate3d(1.5%, -1%, 0) scale(1.02);
+  }
+}
+
+@keyframes floatAccent {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(4vw, -3vh, 0) scale(1.08);
+  }
+
+  100% {
+    transform: translate3d(-2vw, 5vh, 0) scale(0.95);
   }
 }
 
@@ -1371,7 +1809,6 @@ input {
       40px 20px,
       0 0;
   }
-
   to {
     background-position:
       40px 24px,
@@ -1398,8 +1835,19 @@ input {
   from {
     transform: scaleX(0);
   }
-
   to {
     transform: scaleX(1);
+  }
+}
+
+@keyframes motifFloat {
+  from {
+    opacity: 0.46;
+    transform: translate3d(0, 0, 0) rotate(calc((var(--motif-index) - 3) * 7deg));
+  }
+
+  to {
+    opacity: 0.76;
+    transform: translate3d(0.7rem, -1rem, 0) rotate(calc((var(--motif-index) - 1) * 6deg));
   }
 }

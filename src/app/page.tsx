@@ -3,10 +3,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 
 const heroBadges = [
-  ["AIR Culture", "128+", "Top ranks"],
+  ["All India Ranks", "128+", "Top ranks"],
   ["Scholarships", "12.8Cr", "Mapped"],
   ["Mentor Pulse", "98%", "Plans updated"],
 ];
@@ -100,13 +100,6 @@ const campus = [
     stats: ["Expression", "Leadership"],
     size: "wide",
   },
-];
-
-const successHighlights = [
-  ["AIR Ranks", "128+", "NEET, JEE, Olympiad and foundation achievements"],
-  ["Scholarships", "12.8Cr", "Mapped for eligible families this cycle"],
-  ["Parent Trust", "95%", "Families value mentor visibility and progress clarity"],
-  ["Academic Legacy", "41+", "Years of Sri Chaitanya academic excellence"],
 ];
 
 const legacyStats = [
@@ -216,6 +209,49 @@ const visualMoments = [
   { title: "Leadership programs", image: "/imageSection/4.avif" },
 ];
 
+const stackStories = [
+  {
+    label: "Achievements",
+    title: "All India rank momentum",
+    text: "A disciplined test culture helps students turn preparation into visible results across NEET, JEE, Olympiads, and foundation programs.",
+    stat: "128+",
+    statLabel: "top rank moments",
+    image: "/imageSection/9.webp",
+  },
+  {
+    label: "Faculty",
+    title: "Mentors who translate ambition into routine",
+    text: "Experienced teachers map concepts, revision loops, doubt rooms, and weekly improvement rituals into a clear path for every learner.",
+    stat: "55K+",
+    statLabel: "teaching and support staff",
+    image: "/imageSection/1.webp",
+  },
+  {
+    label: "Labs",
+    title: "Learning spaces built for discovery",
+    text: "Science, robotics, digital learning, and inquiry-led classroom moments make concepts tangible before they become exam confidence.",
+    stat: "950+",
+    statLabel: "campuses across India",
+    image: "/blog/4.jpg",
+  },
+  {
+    label: "Results",
+    title: "Progress that parents can actually see",
+    text: "Mentor reviews, test analytics, parent visibility, and scholarship guidance create a premium academic feedback loop.",
+    stat: "95%",
+    statLabel: "parent trust signal",
+    image: "/imageSection/12.jfif",
+  },
+  {
+    label: "Campus",
+    title: "A complete student life ecosystem",
+    text: "Clubs, stages, sports, leadership programs, and cultural events help students build confidence beyond the classroom.",
+    stat: "41+",
+    statLabel: "years of academic legacy",
+    image: "/blog/6.avif",
+  },
+];
+
 const faculty = [
   ["Physics Strategy", "Dr. Kavya Raman", "/imageSection/1.webp"],
   ["Math Rank Systems", "Aarav Mehta", "/imageSection/2.jfif"],
@@ -239,6 +275,8 @@ const footerGallery = [
   "/imageSection/9.webp",
   "/imageSection/3.avif",
 ];
+
+const academicMotifs = ["A+", "pi", "01", "DNA", "IIT", "NEET", "CBSE", "100%"];
 
 function MagneticButton({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
   const ref = useRef<HTMLButtonElement>(null);
@@ -312,13 +350,14 @@ function CountText({ value }: { value: string }) {
   const numericValue = match ? Number(match[1]) : 0;
   const suffix = match?.[2] ?? "";
   const decimals = match?.[1].includes(".") ? 1 : 0;
+  const hasNumericValue = Boolean(match);
   const ref = useRef<HTMLSpanElement>(null);
   const hasAnimated = useRef(false);
   const [count, setCount] = useState(numericValue);
 
   useEffect(() => {
     const node = ref.current;
-    if (!node || !match) return;
+    if (!node || !hasNumericValue) return;
 
     let animationFrame = 0;
     const animate = () => {
@@ -350,9 +389,9 @@ function CountText({ value }: { value: string }) {
       cancelAnimationFrame(animationFrame);
       observer.disconnect();
     };
-  }, [decimals, match, numericValue]);
+  }, [decimals, hasNumericValue, numericValue]);
 
-  if (!match) return <span>{value}</span>;
+  if (!hasNumericValue) return <span>{value}</span>;
 
   return (
     <span ref={ref}>
@@ -366,16 +405,18 @@ function CountText({ value }: { value: string }) {
 }
 
 export default function Home() {
-  const horizontalRef = useRef<HTMLDivElement>(null);
-  const chronicleRef = useRef<HTMLDivElement>(null);
+  const journeyRef = useRef<HTMLElement>(null);
+  const journeyViewportRef = useRef<HTMLDivElement>(null);
+  const journeyTrackRef = useRef<HTMLDivElement>(null);
+  const chronicleRef = useRef<HTMLElement>(null);
+  const chronicleWindowRef = useRef<HTMLDivElement>(null);
+  const chronicleTrackRef = useRef<HTMLDivElement>(null);
+  const campusRef = useRef<HTMLElement>(null);
+  const campusWindowRef = useRef<HTMLDivElement>(null);
+  const campusTrackRef = useRef<HTMLDivElement>(null);
+  const stackingRef = useRef<HTMLElement>(null);
   const [query, setQuery] = useState("");
   const [activeCity, setActiveCity] = useState(admissionCities[0].city);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const smoothX = useSpring(mouseX, { stiffness: 100, damping: 24 });
-  const smoothY = useSpring(mouseY, { stiffness: 100, damping: 24 });
-  const glowX = useTransform(smoothX, (value) => `${value - 240}px`);
-  const glowY = useTransform(smoothY, (value) => `${value - 240}px`);
 
   const filteredResults = useMemo(
     () => results.filter((item) => `${item.rank} ${item.name} ${item.track}`.toLowerCase().includes(query.toLowerCase())),
@@ -384,32 +425,28 @@ export default function Home() {
   const selectedCity = admissionCities.find((item) => item.city === activeCity) ?? admissionCities[0];
 
   useEffect(() => {
-    const move = (event: MouseEvent) => {
-      mouseX.set(event.clientX);
-      mouseY.set(event.clientY);
-      document.documentElement.style.setProperty("--cursor-x", `${event.clientX}px`);
-      document.documentElement.style.setProperty("--cursor-y", `${event.clientY}px`);
-    };
-    window.addEventListener("mousemove", move);
-    return () => window.removeEventListener("mousemove", move);
-  }, [mouseX, mouseY]);
-
-  useEffect(() => {
     let cleanup = () => {};
+    let cancelled = false;
 
     async function runAnimations() {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
       const [{ gsap }, ScrollTriggerModule, SplitTypeModule] = await Promise.all([
         import("gsap"),
         import("gsap/ScrollTrigger"),
         import("split-type"),
       ]);
+      if (cancelled) return;
+
       const ScrollTrigger = ScrollTriggerModule.ScrollTrigger;
       const SplitType = SplitTypeModule.default;
       gsap.registerPlugin(ScrollTrigger);
+      const existingTriggers = new Set(ScrollTrigger.getAll());
 
       const splits = Array.from(document.querySelectorAll("[data-split]")).map(
         (node) => new SplitType(node as HTMLElement, { types: "words,chars" }),
       );
+      const media = gsap.matchMedia();
 
       gsap.fromTo(".char", { yPercent: 115, opacity: 0, rotateX: -42 }, {
         yPercent: 0,
@@ -421,79 +458,206 @@ export default function Home() {
       });
 
       gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((element) => {
-        gsap.fromTo(element, { y: 70, opacity: 0, filter: "blur(18px)" }, {
+        gsap.fromTo(element, { y: 34, opacity: 0 }, {
           y: 0,
           opacity: 1,
-          filter: "blur(0px)",
-          duration: 1.05,
-          ease: "power3.out",
-          scrollTrigger: { trigger: element, start: "top 84%" },
+          duration: 0.72,
+          ease: "power2.out",
+          scrollTrigger: { trigger: element, start: "top 88%", once: true },
         });
       });
 
       gsap.utils.toArray<HTMLElement>("[data-mask]").forEach((element) => {
-        gsap.fromTo(element, { clipPath: "inset(0 0 100% 0 round 32px)", scale: 1.04 }, {
+        gsap.fromTo(element, { clipPath: "inset(0 0 12% 0 round 28px)", scale: 1.025 }, {
           clipPath: "inset(0 0 0% 0 round 32px)",
           scale: 1,
-          duration: 1.2,
-          ease: "power4.out",
-          scrollTrigger: { trigger: element, start: "top 78%" },
+          duration: 0.82,
+          ease: "power3.out",
+          scrollTrigger: { trigger: element, start: "top 82%", once: true },
         });
       });
 
-      gsap.utils.toArray<HTMLElement>("[data-parallax]").forEach((element) => {
-        gsap.to(element, {
-          yPercent: -16,
-          ease: "none",
-          scrollTrigger: { trigger: element, scrub: true },
-        });
+      media.add("(min-width: 1024px)", () => {
+        const journeySection = journeyRef.current;
+        const journeyViewport = journeyViewportRef.current;
+        const journeyTrack = journeyTrackRef.current;
+
+        if (journeySection && journeyViewport && journeyTrack) {
+          const travel = () => Math.max(0, journeyTrack.scrollWidth - journeyViewport.offsetWidth);
+
+          gsap.to(journeyTrack, {
+            x: () => -travel(),
+            ease: "none",
+            scrollTrigger: {
+              trigger: journeySection,
+              pin: true,
+              pinSpacing: true,
+              scrub: 0.62,
+              start: "top top",
+              end: () => `+=${travel()}`,
+              invalidateOnRefresh: true,
+              anticipatePin: 1,
+            },
+          });
+        }
+
+        const chronicleSection = chronicleRef.current;
+        const chronicleWindow = chronicleWindowRef.current;
+        const chronicleTrack = chronicleTrackRef.current;
+
+        if (chronicleSection && chronicleWindow && chronicleTrack) {
+          const chronicleTravel = () => Math.max(0, chronicleTrack.scrollHeight - chronicleWindow.clientHeight);
+          const chronicleItems = gsap.utils.toArray<HTMLElement>(".chronicle-item");
+
+          gsap.set(chronicleItems.slice(1), { autoAlpha: 0.48, y: 28, scale: 0.985 });
+
+          const chronicleTimeline = gsap.timeline({
+            scrollTrigger: {
+              trigger: chronicleSection,
+              pin: true,
+              pinSpacing: true,
+              scrub: 0.68,
+              start: "top top",
+              end: () => `+=${Math.max(chronicleTravel() * 0.88, window.innerHeight * 0.75)}`,
+              invalidateOnRefresh: true,
+              anticipatePin: 1,
+            },
+          });
+
+          chronicleTimeline.to(chronicleTrack, { y: () => -chronicleTravel(), ease: "none", duration: 1 }, 0);
+
+          chronicleItems.forEach((item, index) => {
+            const point = index / Math.max(chronicleItems.length - 1, 1);
+            chronicleTimeline.to(item, { autoAlpha: 1, y: 0, scale: 1, duration: 0.18, ease: "power2.out" }, point);
+            if (chronicleItems[index - 1]) {
+              chronicleTimeline.to(chronicleItems[index - 1], { autoAlpha: 0.62, scale: 0.985, duration: 0.18 }, point);
+            }
+          });
+        }
+
+        const campusSection = campusRef.current;
+        const campusWindow = campusWindowRef.current;
+        const campusTrack = campusTrackRef.current;
+
+        if (campusSection && campusWindow && campusTrack) {
+          const campusTravel = () => Math.max(0, campusTrack.scrollHeight - campusWindow.clientHeight);
+          const campusItems = gsap.utils.toArray<HTMLElement>(".campus-node");
+          const routeSteps = gsap.utils.toArray<HTMLElement>(".campus-route-step");
+
+          gsap.set(campusItems.slice(1), { autoAlpha: 0.45, y: 26, scale: 0.98 });
+          gsap.set(routeSteps.slice(1), { autoAlpha: 0.45 });
+
+          const campusTimeline = gsap.timeline({
+            scrollTrigger: {
+              trigger: campusSection,
+              pin: true,
+              pinSpacing: true,
+              scrub: 0.72,
+              start: "top top",
+              end: () => `+=${Math.max(campusTravel() * 0.85, window.innerHeight * 0.85)}`,
+              invalidateOnRefresh: true,
+              anticipatePin: 1,
+            },
+          });
+
+          campusTimeline.to(campusTrack, { y: () => -campusTravel(), ease: "none", duration: 1 }, 0);
+
+          campusItems.forEach((item, index) => {
+            campusTimeline.to(item, { autoAlpha: 1, y: 0, scale: 1, duration: 0.18, ease: "power2.out" }, index / Math.max(campusItems.length - 1, 1));
+            if (campusItems[index - 1]) {
+              campusTimeline.to(campusItems[index - 1], { autoAlpha: 0.62, scale: 0.985, duration: 0.18, ease: "power2.out" }, index / Math.max(campusItems.length - 1, 1));
+            }
+          });
+
+          routeSteps.forEach((step, index) => {
+            campusTimeline.to(step, { autoAlpha: 1, x: 0, duration: 0.16, ease: "power2.out" }, index / Math.max(routeSteps.length - 1, 1));
+            if (routeSteps[index - 1]) {
+              campusTimeline.to(routeSteps[index - 1], { autoAlpha: 0.48, duration: 0.16 }, index / Math.max(routeSteps.length - 1, 1));
+            }
+          });
+        }
+
+        const stackingSection = stackingRef.current;
+
+        if (stackingSection) {
+          const stackCards = gsap.utils.toArray<HTMLElement>(".stack-card");
+          const stackBackground = stackingSection.querySelector(".stacking-bg") as HTMLElement | null;
+
+          if (stackCards.length) {
+            gsap.set(stackCards, {
+              y: (index) => (index === 0 ? 0 : window.innerHeight * 0.78),
+              scale: 1,
+              filter: "brightness(1)",
+              zIndex: (index) => index + 1,
+              transformOrigin: "50% 0%",
+            });
+
+            const stackTimeline = gsap.timeline({
+              scrollTrigger: {
+                trigger: stackingSection,
+                pin: true,
+                pinSpacing: true,
+                scrub: 0.72,
+                start: "top top",
+                end: () => `+=${Math.max(window.innerHeight * (stackCards.length - 1) * 0.82, window.innerHeight * 2.4)}`,
+                invalidateOnRefresh: true,
+                anticipatePin: 1,
+              },
+            });
+
+            if (stackBackground) {
+              stackTimeline.to(stackBackground, { yPercent: -10, scale: 1.08, ease: "none", duration: stackCards.length - 1 }, 0);
+            }
+
+            stackCards.forEach((card, index) => {
+              if (index === 0) return;
+              const at = index - 1;
+              stackTimeline.to(card, { y: index * 18, duration: 0.78, ease: "power2.out" }, at);
+              stackTimeline.to(
+                stackCards.slice(0, index),
+                {
+                  scale: (cardIndex) => Math.max(0.88, 1 - (index - cardIndex) * 0.035),
+                  filter: (cardIndex) => `brightness(${Math.max(0.72, 1 - (index - cardIndex) * 0.08)})`,
+                  y: (cardIndex) => cardIndex * 18,
+                  duration: 0.72,
+                  ease: "power2.out",
+                },
+                at,
+              );
+            });
+          }
+        }
       });
 
-      if (horizontalRef.current) {
-        const track = horizontalRef.current;
-        gsap.to(track, {
-          x: () => -(track.scrollWidth - window.innerWidth + 48),
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".journey-stage",
-            pin: true,
-            scrub: 1,
-            start: "top top",
-            end: () => `+=${track.scrollWidth}`,
-            invalidateOnRefresh: true,
-          },
-        });
-      }
-
-      if (chronicleRef.current) {
-        const track = chronicleRef.current;
-        gsap.to(track, {
-          y: () => Math.min(0, -(track.scrollHeight - window.innerHeight * 0.62)),
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".chronicle-section",
-            pin: true,
-            scrub: 1,
-            start: "top top",
-            end: () => `+=${Math.max(track.scrollHeight, window.innerHeight * 1.5)}`,
-            invalidateOnRefresh: true,
-          },
-        });
-      }
+      requestAnimationFrame(() => ScrollTrigger.refresh());
 
       cleanup = () => {
+        ScrollTrigger.getAll().forEach((trigger) => {
+          if (!existingTriggers.has(trigger)) trigger.kill();
+        });
+        media.revert();
         splits.forEach((split) => split.revert());
-        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
       };
     }
 
     runAnimations().catch(() => undefined);
-    return () => cleanup();
+    return () => {
+      cancelled = true;
+      cleanup();
+    };
   }, []);
 
   return (
-    <main className="premium-world min-h-screen overflow-hidden text-[#0F2744]">
-      <motion.div className="cursor-aura pointer-events-none fixed z-[80] hidden h-[480px] w-[480px] rounded-full lg:block" style={{ x: glowX, y: glowY }} />
+    <main className="premium-world min-h-screen overflow-x-clip text-[#0F2744]">
+      {/* Ambient floating accents rendered from CSS pseudo-elements */}
+      <div className="floating-accents pointer-events-none fixed inset-0 z-0">
+        {academicMotifs.map((item, index) => (
+          <span key={item} className="academic-motif" style={{ "--motif-index": index } as React.CSSProperties}>
+            {item}
+          </span>
+        ))}
+      </div>
+
       <div className="scroll-progress fixed left-0 top-0 z-[100] h-1 w-full origin-left" />
       <div className="premium-loader fixed inset-0 z-[120] grid place-items-center bg-[#0F2744]">
         <div className="text-center">
@@ -511,7 +675,7 @@ export default function Home() {
             <span className="text-sm font-black tracking-[-0.03em]">Sri Chaitanya</span>
           </div>
           <div className="hidden items-center gap-7 text-xs font-bold uppercase tracking-[0.2em] text-[#F8F5EE]/64 lg:flex">
-            {["Story", "Journey", "Results", "Programs", "Admissions"].map((item) => (
+            {["Story", "Journey", "Results", "Programs"].map((item) => (
               <a key={item} href={`#${item.toLowerCase()}`} className="transition hover:text-[#D4A64A]">{item}</a>
             ))}
           </div>
@@ -519,6 +683,7 @@ export default function Home() {
         </nav>
       </header>
 
+      {/* Hero */}
       <section className="cinematic-hero relative flex min-h-screen items-center px-5 pb-16 pt-28 text-[#F8F5EE] sm:px-8 lg:px-12">
         <video className="absolute inset-0 h-full w-full object-cover" autoPlay muted loop playsInline poster="/hero-banners/home/1.jpeg">
           <source src="/hero-banners/home/hero.mp4" type="video/mp4" />
@@ -532,7 +697,7 @@ export default function Home() {
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="inline-flex rounded-full border border-[#D4A64A]/35 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.28em] text-[#D4A64A] backdrop-blur-xl">
               Premium global education brand
             </motion.p>
-            <h1 data-split className="hero-title mt-7 max-w-2xl font-black">
+            <h1 data-split className="hero-title font-display mt-7 max-w-2xl font-black">
               Shaping bright futures with academic excellence
             </h1>
             <p className="mt-7 max-w-xl text-base leading-8 text-[#F8F5EE]/76 sm:text-lg">
@@ -553,7 +718,7 @@ export default function Home() {
             <div className="signal-wave" />
             <div className="relative">
               <p className="section-kicker">Live success signals</p>
-              <h2 className="mt-3 text-2xl font-black leading-none tracking-[-0.052em] text-[#F8F5EE] sm:text-3xl">
+              <h2 className="font-display mt-3 text-2xl font-black leading-none tracking-[-0.052em] text-[#F8F5EE] sm:text-3xl">
                 Momentum you can see.
               </h2>
             </div>
@@ -578,6 +743,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Marquee */}
       <section className="marquee-band border-y border-[#0F2744]/8 bg-[#F8F5EE] py-5">
         <div className="marquee-track flex w-max gap-4 whitespace-nowrap">
           {[...marquee, ...marquee].map((item, index) => (
@@ -588,28 +754,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="highlight-rail px-5 py-12 sm:px-8 lg:px-12">
-        <div className="mx-auto grid max-w-7xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {successHighlights.map(([label, value, text]) => (
-            <motion.article
-              key={label}
-              data-reveal
-              whileHover={{ y: -8, scale: 1.015 }}
-              className="metric-tile rounded-[28px] border border-[#0F2744]/8 bg-white/65 p-6 shadow-[0_20px_70px_rgba(15,39,68,0.08)] backdrop-blur-xl"
-            >
-              <p className="text-xs font-black uppercase tracking-[0.24em] text-[#C97B63]">{label}</p>
-              <p className="mt-4 text-5xl font-black tracking-[-0.07em] text-[#0F2744]"><CountText value={value} /></p>
-              <p className="mt-3 text-sm leading-6 text-[#0F2744]/60">{text}</p>
-            </motion.article>
-          ))}
-        </div>
-      </section>
-
+      {/* Legacy */}
       <section className="legacy-section px-5 py-20 sm:px-8 lg:px-12">
         <div className="mx-auto max-w-7xl">
           <div data-reveal className="mx-auto max-w-4xl text-center">
             <p className="section-kicker">An illustrious legacy</p>
-            <h2 className="mt-4 font-black leading-none tracking-[-0.055em]">
+            <h2 className="font-display mt-4 font-black leading-none tracking-[-0.055em]">
               Excellence that continues to shape generations.
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-[#0F2744]/64">
@@ -624,7 +774,7 @@ export default function Home() {
                 whileHover={{ y: -10 }}
                 className="legacy-stat rounded-[30px] border border-[#0F2744]/8 bg-[#F8F4EC]/76 p-7 text-center shadow-[0_24px_80px_rgba(15,39,68,0.08)] backdrop-blur-xl"
               >
-                <p className="text-5xl font-black tracking-[-0.07em] text-[#0F2744]"><CountText value={value} /></p>
+                <p className="font-display text-5xl font-black tracking-[-0.07em] text-[#0F2744]"><CountText value={value} /></p>
                 <p className="mt-3 text-xs font-black uppercase tracking-[0.24em] text-[#C97B63]">{label}</p>
                 <p className="mt-5 text-sm leading-6 text-[#0F2744]/62">{text}</p>
               </motion.article>
@@ -633,11 +783,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="chronicle-section px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
+      {/* Chronicle Timeline */}
+      <section ref={chronicleRef} className="chronicle-section px-5 py-20 sm:px-8 lg:px-12">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.76fr_1.24fr] lg:items-start">
           <div data-reveal className="lg:sticky lg:top-28">
             <p className="section-kicker">Year-wise achievements</p>
-            <h2 className="mt-4 max-w-xl font-black leading-none tracking-[-0.055em]">
+            <h2 className="font-display mt-4 max-w-xl font-black leading-none tracking-[-0.055em]">
               Four decades of progress, told as a living timeline.
             </h2>
             <p className="mt-6 max-w-md text-base leading-7 text-[#0F2744]/64">
@@ -645,36 +796,37 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="chronicle-scroll-window">
-            <div ref={chronicleRef} className="chronicle-track">
-            {achievementTimeline.map((item, index) => (
-              <motion.article
-                key={item.year}
-                data-reveal
-                whileHover={{ x: 10 }}
-                className="chronicle-item"
-              >
-                <div className="chronicle-year">
-                  <span>{item.year}</span>
-                </div>
-                <div className="chronicle-copy">
-                  <p>{item.label}</p>
-                  <h3>{item.title}</h3>
-                  <span>{item.text}</span>
-                </div>
-                <div className="chronicle-pulse" style={{ animationDelay: `${index * 180}ms` }} />
-              </motion.article>
-            ))}
+          <div ref={chronicleWindowRef} className="chronicle-scroll-window">
+            <div ref={chronicleTrackRef} className="chronicle-track">
+              {achievementTimeline.map((item, index) => (
+                <motion.article
+                  key={item.year}
+                  data-reveal
+                  whileHover={{ x: 10 }}
+                  className="chronicle-item"
+                >
+                  <div className="chronicle-year">
+                    <span>{item.year}</span>
+                  </div>
+                  <div className="chronicle-copy">
+                    <p>{item.label}</p>
+                    <h3 className="font-display">{item.title}</h3>
+                    <span>{item.text}</span>
+                  </div>
+                  <div className="chronicle-pulse" style={{ animationDelay: `${index * 180}ms` }} />
+                </motion.article>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
+      {/* Story */}
       <section id="story" className="editorial-section px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
         <div className="mx-auto max-w-7xl">
           <div data-reveal className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
             <p className="section-kicker">A new standard for school experience</p>
-            <h2 className="max-w-5xl text-5xl font-black leading-[0.98] tracking-[-0.06em] sm:text-7xl">
+            <h2 className="font-display max-w-5xl text-5xl font-black leading-[0.98] tracking-[-0.06em] sm:text-7xl">
               Less brochure. More institution-grade storytelling.
             </h2>
           </div>
@@ -682,12 +834,12 @@ export default function Home() {
           <div className="mt-20 space-y-24">
             {stories.map((story, index) => (
               <article key={story.title} className={`story-row grid gap-10 lg:grid-cols-2 lg:items-center ${index % 2 ? "lg:[&>*:first-child]:order-2" : ""}`}>
-                <div data-mask className="relative min-h-[480px] overflow-hidden rounded-[34px] shadow-[0_28px_90px_rgba(15,39,68,0.14)]">
+                <div data-mask className="relative min-h-[380px] overflow-hidden rounded-[28px] shadow-[0_22px_70px_rgba(15,39,68,0.12)]">
                   <Image src={story.image} alt={story.title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover transition duration-700 hover:scale-105" />
                 </div>
                 <div data-reveal className="max-w-xl">
                   <p className="section-kicker">{story.eyebrow}</p>
-                  <h3 className="mt-5 text-4xl font-black leading-none tracking-[-0.052em] sm:text-6xl">{story.title}</h3>
+                  <h3 className="font-display mt-5 text-4xl font-black leading-none tracking-[-0.052em] sm:text-6xl">{story.title}</h3>
                   <p className="mt-6 text-lg leading-8 text-[#0F2744]/66">{story.text}</p>
                 </div>
               </article>
@@ -696,36 +848,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="journey" className="journey-stage bg-[#0F2744] py-20 text-[#F8F5EE]">
-        <div className="px-5 sm:px-8 lg:px-12">
-          <p className="section-kicker">Interactive student journey</p>
-          <h2 className="mt-4 max-w-5xl text-5xl font-black leading-none tracking-[-0.06em] sm:text-7xl">
-            Scroll through the Sri Chaitanya operating model.
-          </h2>
-        </div>
-        <div ref={horizontalRef} className="mt-12 flex w-max gap-6 px-5 sm:px-8 lg:px-12">
-          {journey.map(([step, title, text, image]) => (
-            <article key={title} className="journey-panel grid h-[58vh] w-[86vw] shrink-0 overflow-hidden rounded-[34px] border border-white/12 bg-[#F8F5EE] text-[#0F2744] shadow-[0_30px_100px_rgba(0,0,0,0.22)] sm:w-[680px] md:grid-cols-[0.9fr_1.1fr]">
-              <div className="relative min-h-48 overflow-hidden md:min-h-full">
-                <Image src={image} alt={`${title} student journey`} fill sizes="(max-width: 768px) 86vw, 320px" className="object-cover transition duration-700 hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0F2744]/38 to-transparent" />
-              </div>
-              <div className="flex flex-col justify-end p-7 sm:p-8">
-                <span className="text-7xl font-black tracking-[-0.08em] text-[#D4A64A] sm:text-8xl">{step}</span>
-                <h3 className="mt-8 text-4xl font-black tracking-[-0.06em] sm:text-5xl">{title}</h3>
-                <p className="mt-5 max-w-sm text-base leading-7 text-[#0F2744]/62 sm:text-lg sm:leading-8">{text}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
+      {/* Results */}
       <section id="results" className="results-section px-5 py-24 text-[#F8F5EE] sm:px-8 lg:px-12 lg:py-32">
         <div className="mx-auto max-w-7xl">
           <div data-reveal className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="section-kicker">Results showcase</p>
-              <h2 className="mt-4 max-w-4xl text-5xl font-black leading-none tracking-[-0.06em] sm:text-7xl">
+              <h2 className="font-display mt-4 max-w-4xl text-5xl font-black leading-none tracking-[-0.06em] sm:text-7xl">
                 Achievement with depth, not noise.
               </h2>
             </div>
@@ -745,13 +874,13 @@ export default function Home() {
                 key={item.name}
                 data-reveal
                 whileHover={{ y: -14, rotateX: 6, rotateY: index === 1 ? -7 : 7 }}
-                className="tilt-card relative min-h-[500px] overflow-hidden rounded-[34px] border border-white/12 bg-white/8 p-6 shadow-[0_34px_110px_rgba(0,0,0,0.25)] backdrop-blur-xl"
+                className="tilt-card relative min-h-[420px] overflow-hidden rounded-[28px] border border-white/12 bg-white/8 p-6 shadow-[0_26px_90px_rgba(0,0,0,0.22)] backdrop-blur-xl"
               >
                 <Image src={item.image} alt={item.name} fill sizes="(max-width: 1024px) 100vw, 33vw" className="object-cover opacity-80" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0F2744] via-[#0F2744]/40 to-transparent" />
-                <div className="relative mt-72">
-                  <p className="text-6xl font-black tracking-[-0.08em] text-[#D4A64A]">{item.rank}</p>
-                  <h3 className="mt-4 text-3xl font-black">{item.name}</h3>
+                <div className="relative mt-60">
+                  <p className="font-display text-5xl font-black tracking-[-0.07em] text-[#D4A64A]">{item.rank}</p>
+                  <h3 className="font-display mt-4 text-3xl font-black">{item.name}</h3>
                   <p className="mt-2 text-[#F8F5EE]/66">{item.track} - {item.score}</p>
                 </div>
               </motion.article>
@@ -760,12 +889,98 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="campus-section px-5 py-24 text-[#0F2744] sm:px-8 lg:px-12 lg:py-32">
+      {/* Programs */}
+      <section id="programs" className="program-section px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
+        <div className="mx-auto max-w-7xl">
+          <p className="section-kicker">Academic programs</p>
+          <h2 data-reveal className="font-display program-heading mt-4 max-w-4xl font-black leading-none tracking-[-0.06em]">
+            Built like pathways, not product boxes.
+          </h2>
+          <div className="premium-scroll mt-14 flex snap-x gap-5 overflow-x-auto pb-8">
+            {programs.map((program) => (
+              <motion.article key={program.name} whileHover={{ scale: 1.015 }} className="relative h-[400px] min-w-[78vw] snap-center overflow-hidden rounded-[28px] md:min-w-[360px]">
+                <Image src={program.image} alt={program.name} fill sizes="430px" className="object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0F2744] via-[#0F2744]/28 to-transparent" />
+                <div className="absolute bottom-0 p-7 text-[#F8F5EE]">
+                  <p className="section-kicker">{program.label}</p>
+                  <h3 className="font-display program-card-title mt-3 font-black tracking-[-0.05em]">{program.name}</h3>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Journey */}
+      <section ref={journeyRef} id="journey" className="journey-stage bg-[#0F2744] px-5 py-16 text-[#F8F5EE] sm:px-8 lg:px-12">
+        <div className="journey-copy mx-auto w-full max-w-7xl">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="section-kicker">Interactive student journey</p>
+              <h2 className="font-display mt-4 max-w-3xl text-4xl font-black leading-[1.02] tracking-[-0.05em] sm:text-5xl">
+                Scroll through the Sri Chaitanya operating model.
+              </h2>
+            </div>
+            <p className="journey-hint max-w-sm text-sm font-bold uppercase tracking-[0.22em] text-[#D4A64A]/80">
+              Wheel scroll moves the cards
+            </p>
+          </div>
+        </div>
+
+        <div ref={journeyViewportRef} className="journey-viewport mx-auto mt-10 w-full max-w-7xl overflow-hidden">
+          <div ref={journeyTrackRef} className="journey-track flex gap-5">
+            {journey.map(([step, title, text, image]) => (
+              <article key={title} className="journey-panel grid shrink-0 overflow-hidden rounded-[26px] border border-white/12 bg-[#F8F5EE] text-[#0F2744] shadow-[0_22px_70px_rgba(0,0,0,0.18)]">
+                <div className="relative min-h-44 overflow-hidden">
+                  <Image src={image} alt={`${title} student journey`} fill sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 360px" className="object-cover transition duration-700 hover:scale-105" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0F2744]/38 to-transparent" />
+                </div>
+                <div className="flex min-h-64 flex-col p-5">
+                  <span className="font-display text-5xl font-black tracking-[-0.07em] text-[#D4A64A]">{step}</span>
+                  <h3 className="font-display mt-5 text-2xl font-black tracking-[-0.045em]">{title}</h3>
+                  <p className="mt-4 text-sm leading-6 text-[#0F2744]/62">{text}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Learning Bridge */}
+      <section className="learning-bridge-section px-5 py-20 text-[#0F2744] sm:px-8 lg:px-12">
+        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div data-reveal>
+            <p className="section-kicker">Focused pathway</p>
+            <h2 className="font-display mt-4 max-w-3xl font-black leading-[1.04] tracking-[-0.045em]">
+              From journey mapping to daily learning spaces.
+            </h2>
+            <p className="mt-5 max-w-xl text-base leading-7 text-[#0F2744]/66">
+              The horizontal story shows the student path. Next, the campus timeline shows how each day turns that path into practice, mentoring, performance, and confidence.
+            </p>
+          </div>
+          <div data-reveal className="bridge-visual grid gap-4 sm:grid-cols-3">
+            {[
+              ["Plan", "/imageSection/11.jpeg"],
+              ["Practice", "/blog/4.jpg"],
+              ["Progress", "/imageSection/12.jfif"],
+            ].map(([label, image]) => (
+              <article key={label} className="relative min-h-[260px] overflow-hidden rounded-[28px] border border-[#0F2744]/8 shadow-[0_20px_70px_rgba(15,39,68,0.1)]">
+                <Image src={image} alt={`${label} learning pathway`} fill sizes="(max-width: 768px) 100vw, 260px" className="object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0F2744]/72 to-transparent" />
+                <h3 className="font-display absolute bottom-0 p-5 text-2xl font-black text-[#F8F5EE]">{label}</h3>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Campus */}
+      <section ref={campusRef} className="campus-section px-5 py-20 text-[#0F2744] sm:px-8 lg:px-12">
         <div className="campus-atlas mx-auto max-w-7xl">
           <div data-reveal className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
             <div>
               <p className="section-kicker">Campus experience</p>
-              <h2 className="campus-heading mt-4 max-w-2xl font-black leading-none tracking-[-0.055em]">
+              <h2 className="font-display campus-heading mt-4 max-w-2xl font-black leading-none tracking-[-0.055em]">
                 A living atlas of learning spaces.
               </h2>
             </div>
@@ -774,17 +989,17 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="campus-map mt-14 grid gap-8 lg:grid-cols-[0.78fr_1.22fr]">
-            <motion.div data-reveal className="campus-command relative overflow-hidden rounded-[42px] border border-[#7A8A5A]/18 p-7 sm:p-9" whileHover={{ y: -6 }}>
+          <div className="campus-map mt-12 grid gap-8 lg:grid-cols-[0.78fr_1.22fr]">
+            <motion.div data-reveal className="campus-command relative overflow-hidden rounded-[34px] border border-[#7A8A5A]/18 p-7 sm:p-8" whileHover={{ y: -5 }}>
               <div className="campus-command-orbit" />
               <p className="section-kicker">Discovery route</p>
-              <h3 className="mt-6 text-4xl font-black leading-none tracking-[-0.055em] sm:text-5xl">
+              <h3 className="font-display mt-6 text-4xl font-black leading-none tracking-[-0.055em] sm:text-5xl">
                 From curiosity to public confidence.
               </h3>
               <p className="mt-5 text-sm leading-7 text-[#0F2744]/64">
-                A softer campus story with visible movement, warm color, and less boxed repetition.
+                Scroll to move through the learning spaces: experiment, mentor, perform, and lead.
               </p>
-              <div className="mt-10 space-y-4">
+              <div className="mt-8 space-y-4">
                 {["Experiment", "Mentor", "Perform", "Lead"].map((step, index) => (
                   <div key={step} className="campus-route-step">
                     <span>{String(index + 1).padStart(2, "0")}</span>
@@ -794,62 +1009,43 @@ export default function Home() {
               </div>
             </motion.div>
 
-            <div className="campus-field relative">
-              <div className="campus-path-line" />
-              {campus.map((item, index) => (
-                <motion.article
-                  key={item.title}
-                  data-reveal
-                  whileHover={{ y: -8 }}
-                  className={`campus-node group ${index % 2 ? "campus-node-offset" : ""}`}
-                >
-                  <div className="campus-node-number">0{index + 1}</div>
-                  <div className="campus-node-media">
-                    <Image src={item.image} alt={item.title} fill sizes="(max-width: 768px) 100vw, 380px" className="object-cover transition duration-700 group-hover:scale-105" />
-                  </div>
-                  <div className="campus-node-copy">
-                    <h3>{item.title}</h3>
-                    <p>{item.text}</p>
-                    <div>
-                      {item.stats.map((stat) => (
-                        <span key={stat}>{stat}</span>
-                      ))}
+            <div ref={campusWindowRef} className="campus-story-window relative">
+              <div ref={campusTrackRef} className="campus-field relative">
+                <div className="campus-path-line" />
+                {campus.map((item, index) => (
+                  <motion.article
+                    key={item.title}
+                    whileHover={{ y: -8 }}
+                    className={`campus-node group ${index % 2 ? "campus-node-offset" : ""}`}
+                  >
+                    <div className="campus-node-number">0{index + 1}</div>
+                    <div className="campus-node-media">
+                      <Image src={item.image} alt={item.title} fill sizes="(max-width: 768px) 100vw, 380px" className="object-cover transition duration-700 group-hover:scale-105" />
                     </div>
-                  </div>
-                </motion.article>
-              ))}
+                    <div className="campus-node-copy">
+                      <h3 className="font-display">{item.title}</h3>
+                      <p>{item.text}</p>
+                      <div>
+                        {item.stats.map((stat) => (
+                          <span key={stat}>{stat}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.article>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="programs" className="program-section px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
-        <div className="mx-auto max-w-7xl">
-          <p className="section-kicker">Academic programs</p>
-          <h2 data-reveal className="program-heading mt-4 max-w-4xl font-black leading-none tracking-[-0.06em]">
-            Built like pathways, not product boxes.
-          </h2>
-          <div className="premium-scroll mt-14 flex snap-x gap-5 overflow-x-auto pb-8">
-            {programs.map((program) => (
-              <motion.article key={program.name} whileHover={{ scale: 1.025 }} className="relative h-[500px] min-w-[84vw] snap-center overflow-hidden rounded-[34px] md:min-w-[420px]">
-                <Image src={program.image} alt={program.name} fill sizes="430px" className="object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0F2744] via-[#0F2744]/28 to-transparent" />
-                <div className="absolute bottom-0 p-7 text-[#F8F5EE]">
-                  <p className="section-kicker">{program.label}</p>
-                  <h3 className="program-card-title mt-3 font-black tracking-[-0.05em]">{program.name}</h3>
-                </div>
-              </motion.article>
-            ))}
-          </div>
-        </div>
-      </section>
-
+      {/* City Map */}
       <section className="city-section px-5 py-24 sm:px-8 lg:px-12">
         <div className="mx-auto max-w-7xl">
           <div data-reveal className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
             <div>
               <p className="section-kicker">Admissions near you</p>
-              <h2 className="mt-4 max-w-3xl font-black leading-none tracking-[-0.055em]">
+              <h2 className="font-display mt-4 max-w-3xl font-black leading-none tracking-[-0.055em]">
                 Find the right campus in your city.
               </h2>
             </div>
@@ -876,7 +1072,7 @@ export default function Home() {
           </div>
 
           <div data-reveal className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.25fr)_420px]">
-            <div className="premium-map relative min-h-[560px] overflow-hidden rounded-[38px] border border-[#0F2744]/8 bg-[#EAEEDC] shadow-[0_30px_110px_rgba(15,39,68,0.12)]">
+            <div className="premium-map relative min-h-[470px] overflow-hidden rounded-[30px] border border-[#0F2744]/8 bg-[#EAEEDC] shadow-[0_24px_90px_rgba(15,39,68,0.12)]">
               <iframe
                 key={selectedCity.city}
                 title={`${selectedCity.city} branch map`}
@@ -894,7 +1090,7 @@ export default function Home() {
 
               <div className="absolute left-6 top-6 rounded-[28px] border border-[#0F2744]/8 bg-[#F8F4EC]/86 p-5 shadow-[0_18px_60px_rgba(15,39,68,0.1)] backdrop-blur-xl">
                 <p className="text-xs font-black uppercase tracking-[0.24em] text-[#C97B63]">Live city preview</p>
-                <h3 className="mt-2 text-3xl font-black tracking-[-0.05em] text-[#0F2744]">{selectedCity.city}</h3>
+                <h3 className="font-display mt-2 text-3xl font-black tracking-[-0.05em] text-[#0F2744]">{selectedCity.city}</h3>
               </div>
 
               {selectedCity.branches.map((branch, index) => (
@@ -920,7 +1116,7 @@ export default function Home() {
 
             <aside className="city-panel rounded-[38px] border border-[#0F2744]/8 bg-[#F8F4EC]/86 p-6 shadow-[0_30px_110px_rgba(15,39,68,0.1)] backdrop-blur-xl">
               <p className="section-kicker">Campus list</p>
-              <h3 className="mt-3 text-3xl font-black tracking-[-0.05em] text-[#0F2744]">{selectedCity.city} branches</h3>
+              <h3 className="font-display mt-3 text-3xl font-black tracking-[-0.05em] text-[#0F2744]">{selectedCity.city} branches</h3>
               <div className="mt-6 space-y-4">
                 {selectedCity.branches.map((branch, index) => (
                   <article key={branch.name} className="rounded-[24px] border border-[#0F2744]/8 bg-white/60 p-4">
@@ -942,12 +1138,51 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Stacking Story */}
+      <section ref={stackingRef} className="stacking-section px-5 py-20 text-[#F8F5EE] sm:px-8 lg:px-12">
+        <div className="stacking-bg absolute inset-0" />
+        <div className="relative z-10 mx-auto grid h-full max-w-7xl gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
+          <div className="stacking-copy">
+            <p className="section-kicker">Premium story deck</p>
+            <h2 className="font-display mt-4 max-w-xl font-black leading-[1.02] tracking-[-0.05em]">
+              Scroll through the layers of a high-performance school.
+            </h2>
+            <p className="mt-6 max-w-md text-base leading-7 text-[#F8F5EE]/68">
+              Each card stacks above the last, revealing how achievements, faculty, labs, results, and campus life work together.
+            </p>
+          </div>
+
+          <div className="stacking-deck">
+            {stackStories.map((item, index) => (
+              <article key={item.title} className="stack-card" style={{ "--stack-index": index } as React.CSSProperties}>
+                <div className="stack-card-media">
+                  <Image src={item.image} alt={item.title} fill sizes="(max-width: 1024px) 100vw, 560px" className="object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0F2744]/60 via-transparent to-transparent" />
+                </div>
+                <div className="stack-card-copy">
+                  <div>
+                    <p className="section-kicker">{item.label}</p>
+                    <h3 className="font-display mt-3 text-3xl font-black tracking-[-0.045em] text-[#0F2744]">{item.title}</h3>
+                    <p className="mt-4 max-w-xl text-sm leading-6 text-[#0F2744]/64">{item.text}</p>
+                  </div>
+                  <div className="stack-card-stat">
+                    <strong>{item.stat}</strong>
+                    <span>{item.statLabel}</span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Visual Moments */}
       <section className="visual-moments px-5 py-20 sm:px-8 lg:px-12">
         <div className="mx-auto max-w-7xl">
           <div data-reveal className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="section-kicker">Campus highlights</p>
-              <h2 className="mt-4 max-w-4xl text-5xl font-black leading-none tracking-[-0.06em] sm:text-7xl">
+              <h2 className="font-display mt-4 max-w-4xl text-5xl font-black leading-none tracking-[-0.06em] sm:text-7xl">
                 Real moments, not empty decoration.
               </h2>
             </div>
@@ -961,22 +1196,23 @@ export default function Home() {
                 key={item.title}
                 data-reveal
                 whileHover={{ y: -10, scale: 1.02 }}
-                className={`relative overflow-hidden rounded-[32px] shadow-[0_24px_80px_rgba(15,39,68,0.1)] ${index === 1 ? "md:col-span-2 md:row-span-2 min-h-[460px]" : "min-h-[300px]"}`}
+                className={`relative overflow-hidden rounded-[28px] shadow-[0_22px_70px_rgba(15,39,68,0.1)] ${index === 1 ? "md:col-span-2 md:row-span-2 min-h-[380px]" : "min-h-[260px]"}`}
               >
                 <Image src={item.image} alt={item.title} fill sizes="(max-width: 768px) 100vw, 30vw" className="object-cover transition duration-700 hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0F2744]/76 to-transparent" />
-                <h3 className="absolute bottom-0 p-6 text-2xl font-black text-[#F8F5EE]">{item.title}</h3>
+                <h3 className="font-display absolute bottom-0 p-6 text-2xl font-black text-[#F8F5EE]">{item.title}</h3>
               </motion.article>
             ))}
           </div>
         </div>
       </section>
 
+      {/* Faculty */}
       <section className="faculty-section px-5 py-24 sm:px-8 lg:px-12">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:items-center">
           <div data-reveal>
             <p className="section-kicker">Faculty experience</p>
-            <h2 className="mt-4 text-5xl font-black leading-none tracking-[-0.06em] sm:text-7xl">
+            <h2 className="font-display mt-4 text-5xl font-black leading-none tracking-[-0.06em] sm:text-7xl">
               Mentor presence that feels personal.
             </h2>
             <p className="mt-6 text-lg leading-8 text-[#0F2744]/66">
@@ -985,12 +1221,12 @@ export default function Home() {
           </div>
           <div className="grid gap-5 md:grid-cols-3">
             {faculty.map(([role, name, image]) => (
-              <motion.article key={name} whileHover={{ y: -12 }} className="relative min-h-[520px] overflow-hidden rounded-[34px]">
+              <motion.article key={name} whileHover={{ y: -8 }} className="relative min-h-[420px] overflow-hidden rounded-[28px]">
                 <Image src={image} alt={name} fill sizes="320px" className="object-cover transition duration-700 hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0F2744] to-transparent" />
                 <div className="absolute bottom-0 p-6 text-[#F8F5EE]">
                   <p className="text-xs font-black uppercase tracking-[0.24em] text-[#D4A64A]">{role}</p>
-                  <h3 className="mt-3 text-2xl font-black">{name}</h3>
+                  <h3 className="font-display mt-3 text-2xl font-black">{name}</h3>
                 </div>
               </motion.article>
             ))}
@@ -998,52 +1234,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="admissions" className="admission-section px-5 py-24 text-[#F8F5EE] sm:px-8 lg:px-12">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
-          <div data-reveal>
-            <p className="section-kicker">Admissions intelligence</p>
-            <h2 className="mt-4 text-5xl font-black leading-none tracking-[-0.06em] sm:text-7xl">
-              A premium application flow for serious families.
-            </h2>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-[#F8F5EE]/68">
-              A counsellor-led pathway with campus matching, scholarship visibility, parent conversations, and program guidance.
-            </p>
-          </div>
-          <div data-reveal className="grid gap-5 md:grid-cols-[0.82fr_1fr]">
-            <div className="relative min-h-[460px] overflow-hidden rounded-[34px] border border-white/12">
-              <Image src="/imageSection/8.jfif" alt="Parent and student admission conversation" fill sizes="(max-width: 768px) 100vw, 36vw" className="object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0F2744]/76 to-transparent" />
-              <div className="absolute bottom-0 p-6">
-                <p className="section-kicker">Parent trust</p>
-                <h3 className="mt-3 text-3xl font-black">Guidance that feels personal.</h3>
-              </div>
-            </div>
-            <div className="rounded-[34px] border border-white/12 bg-white/10 p-6 backdrop-blur-2xl">
-              <div className="space-y-4">
-                {["Student profile", "Campus match", "Scholarship estimate", "Counsellor call"].map((item, index) => (
-                  <div key={item} className="flex items-center gap-4 rounded-[24px] bg-white/10 p-4">
-                    <span className="grid h-11 w-11 place-items-center rounded-full bg-[#D4A64A] text-sm font-black text-[#0F2744]">{index + 1}</span>
-                    <span className="font-bold">{item}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-6 grid gap-3">
-                <input placeholder="Student name" className="rounded-2xl border border-white/10 bg-white/10 px-4 py-4 outline-none placeholder:text-[#F8F5EE]/45" />
-                <input placeholder="Parent mobile" className="rounded-2xl border border-white/10 bg-white/10 px-4 py-4 outline-none placeholder:text-[#F8F5EE]/45" />
-                <div className="flex justify-start">
-                  <MagneticButton>Request Callback</MagneticButton>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
+      {/* Branch Network */}
       <section className="branch-network-section px-5 py-24 sm:px-8 lg:px-12">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
           <div data-reveal>
             <p className="section-kicker">Branch network</p>
-            <h2 className="mt-4 font-black leading-none tracking-[-0.055em]">
+            <h2 className="font-display mt-4 font-black leading-none tracking-[-0.055em]">
               Find the right Sri Chaitanya campus with clarity.
             </h2>
             <p className="mt-6 max-w-xl text-base leading-7 text-[#0F2744]/64">
@@ -1059,12 +1255,12 @@ export default function Home() {
             </div>
           </div>
           <div data-reveal className="grid gap-5 md:grid-cols-[1fr_0.75fr]">
-            <div className="relative min-h-[430px] overflow-hidden rounded-[34px] shadow-[0_26px_90px_rgba(15,39,68,0.12)]">
+            <div className="relative min-h-[350px] overflow-hidden rounded-[28px] shadow-[0_22px_74px_rgba(15,39,68,0.12)]">
               <Image src="/admission-cities/hyderabad-city.webp" alt="Hyderabad branch network" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0F2744]/72 to-transparent" />
               <div className="absolute bottom-0 p-6 text-[#F8F5EE]">
                 <p className="section-kicker">Hyderabad</p>
-                <h3 className="mt-2 text-3xl font-black">Ameerpet, Madhapur, Kukatpally and more.</h3>
+                <h3 className="font-display mt-2 text-3xl font-black">Ameerpet, Madhapur, Kukatpally and more.</h3>
               </div>
             </div>
             <div className="space-y-4">
@@ -1084,6 +1280,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* AI Section */}
       <section className="ai-section px-5 py-24 sm:px-8 lg:px-12">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1.2fr_0.8fr]">
           <div data-reveal className="grid overflow-hidden rounded-[34px] bg-[#0F2744] text-[#F8F5EE] md:grid-cols-[0.95fr_1.05fr]">
@@ -1092,21 +1289,21 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0F2744]/68" />
             </div>
             <div className="p-7">
-            <p className="section-kicker">AI counsellor</p>
-            <div className="mt-8 space-y-4">
-              <p className="max-w-lg rounded-[26px] bg-white/10 p-5">Which Sri Chaitanya track suits a Class 10 student aiming for engineering?</p>
-              <p className="ml-auto max-w-xl rounded-[26px] bg-[#D4A64A] p-5 text-[#0F2744]">IIT-JEE Apex with Foundation Bridge is the strongest path. Scholarship estimate can be calculated next.</p>
-            </div>
+              <p className="section-kicker">AI counsellor</p>
+              <div className="mt-8 space-y-4">
+                <p className="max-w-lg rounded-[26px] bg-white/10 p-5">Which Sri Chaitanya track suits a Class 10 student aiming for engineering?</p>
+                <p className="ml-auto max-w-xl rounded-[26px] bg-[#D4A64A] p-5 text-[#0F2744]">IIT-JEE Apex with Foundation Bridge is the strongest path. Scholarship estimate can be calculated next.</p>
+              </div>
             </div>
           </div>
           <div data-reveal className="space-y-5">
             <div className="rounded-[30px] bg-white p-6 shadow-[0_24px_80px_rgba(15,39,68,0.1)]">
-              <h3 className="text-2xl font-black">Scholarship calculator</h3>
+              <h3 className="font-display text-2xl font-black">Scholarship calculator</h3>
               <input type="range" min="40" max="100" defaultValue="86" className="mt-8 w-full accent-[#D4A64A]" />
-              <p className="mt-5 text-4xl font-black text-[#C97B63]">Up to 45%</p>
+              <p className="font-display mt-5 text-4xl font-black text-[#C97B63]">Up to 45%</p>
             </div>
             <div className="rounded-[30px] bg-white p-6 shadow-[0_24px_80px_rgba(15,39,68,0.1)]">
-              <h3 className="text-2xl font-black">Result search</h3>
+              <h3 className="font-display text-2xl font-black">Result search</h3>
               <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search rank or student" className="mt-5 w-full rounded-2xl bg-[#F8F5EE] px-4 py-3 outline-none" />
               <div className="mt-4 space-y-2">
                 {(filteredResults.length ? filteredResults : results).slice(0, 2).map((item) => (
@@ -1118,9 +1315,10 @@ export default function Home() {
         </div>
       </section>
 
+      {/* CTA */}
       <section className="cta-section relative overflow-hidden px-5 py-28 text-center text-[#F8F5EE] sm:px-8 lg:px-12">
         <div className="relative mx-auto max-w-5xl">
-          <h2 data-reveal className="text-6xl font-black leading-[0.9] tracking-[-0.08em] sm:text-8xl">
+          <h2 data-reveal className="font-display text-6xl font-black leading-[0.9] tracking-[-0.08em] sm:text-8xl">
             Make the next academic decision feel clear.
           </h2>
           <p className="mx-auto mt-7 max-w-2xl text-lg leading-8 text-[#F8F5EE]/68">
@@ -1130,6 +1328,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Footer */}
       <footer className="premium-footer relative overflow-hidden px-5 pb-12 pt-20 text-[#F8F5EE] sm:px-8 lg:px-12">
         <div className="footer-aurora absolute inset-0" />
         <div className="relative z-10 mx-auto max-w-7xl">
@@ -1147,7 +1346,7 @@ export default function Home() {
           <div className="grid gap-6 lg:grid-cols-[1.05fr_0.75fr_1fr_0.9fr]">
             <div className="footer-panel rounded-[34px] border border-white/10 bg-white/[0.07] p-7 backdrop-blur-2xl">
               <Image src="/logos/logo_transparent_fixed.png" alt="Sri Chaitanya" width={64} height={64} className="rounded-full border border-[#D4A64A]/40 bg-white/10 p-1" />
-              <h2 className="mt-5 text-3xl font-black tracking-[-0.06em]">Sri Chaitanya</h2>
+              <h2 className="font-display mt-5 text-3xl font-black tracking-[-0.06em]">Sri Chaitanya</h2>
               <p className="mt-4 max-w-sm text-sm leading-7 text-[#F8F5EE]/62">Transforming education since 1986 through disciplined academics, competitive preparation, and future-ready mentoring.</p>
               <div className="mt-7 grid grid-cols-3 gap-3">
                 {["41+ years", "950+ campuses", "9.5L+ students"].map((item) => (
@@ -1195,9 +1394,16 @@ export default function Home() {
         </div>
       </footer>
 
+      {/* Floating buttons */}
       <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-3">
         <a href="https://wa.me/" className="grid h-12 w-12 place-items-center rounded-full bg-[#2E4A3D] text-xs font-black text-[#F8F5EE] shadow-2xl">WA</a>
-        <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="grid h-12 w-12 place-items-center rounded-full bg-[#F8F5EE] text-xs font-black text-[#0F2744] shadow-2xl">Top</button>
+        <button
+          type="button"
+          onClick={() => window.__lenis?.scrollTo(0, { duration: 1.05 }) ?? window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="grid h-12 w-12 place-items-center rounded-full bg-[#F8F5EE] text-xs font-black text-[#0F2744] shadow-2xl"
+        >
+          Top
+        </button>
       </div>
     </main>
   );
