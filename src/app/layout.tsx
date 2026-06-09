@@ -8,6 +8,7 @@ import {
   Sora,
 } from "next/font/google";
 import { LenisProvider } from "@/components/lenis-provider";
+import { ChatbotWidget } from "@/components/chatbot-widget";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -62,6 +63,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <LenisProvider />
         {children}
+        <ChatbotWidget />
       </body>
     </html>
   );

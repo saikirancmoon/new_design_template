@@ -1675,14 +1675,14 @@ input {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-top: clamp(6rem, 10vh, 7.5rem);
-    padding-bottom: clamp(2rem, 3vh, 3rem);
+    padding-top: clamp(5rem, 8vh, 6.25rem);
+    padding-bottom: clamp(1.5rem, 2.5vh, 2.5rem);
     overflow: hidden;
   }
 
   .journey-viewport {
     width: min(100%, 1180px);
-    height: min(58vh, 560px);
+    height: clamp(390px, 50vh, 510px);
   }
 
   .journey-track {

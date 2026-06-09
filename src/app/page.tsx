@@ -1071,7 +1071,7 @@ export default function Home() {
               From journey mapping to daily learning spaces.
             </h2>
             <p className="mt-5 max-w-xl text-base leading-7 text-[#0F2744]/66">
-              The horizontal story shows the student path. Next, the campus timeline shows how each day turns that path into practice, mentoring, performance, and confidence.
+              The journey story shows the student path. Next, the campus timeline shows how each day turns that path into practice, mentoring, performance, and confidence.
             </p>
           </div>
           <div data-reveal className="bridge-visual grid gap-4 sm:grid-cols-3">
@@ -1511,7 +1511,7 @@ export default function Home() {
       </footer>
 
       {/* Floating buttons */}
-      <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-3">
+      <div className="fixed bottom-5 left-5 z-50 flex flex-col gap-3">
         <a href="https://wa.me/" className="grid h-12 w-12 place-items-center rounded-full bg-[#2E4A3D] text-xs font-black text-[#F8F5EE] shadow-2xl">WA</a>
         <button
           type="button"

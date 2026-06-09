@@ -1,0 +1,21 @@
+Sri Chaitanya Branches, Campuses, and Network
+
+Sources:
+- https://srichaitanyaschool.net/
+- https://srichaitanya.net/branch-locator/
+- https://srichaitanya.net/iit-jee-neet-long-term-program/
+
+The official Sri Chaitanya Schools website states that Sri Chaitanya Schools has a presence across 22 states, 248 cities, 950 schools, 55,000 staff, 950,000 students, and 1,361,738 parents.
+
+The schools website provides a Find School tool where users can select board, state, city, and branch.
+
+If a user asks generally for branches, first explain that Sri Chaitanya operates across many cities in India, then ask for the user's city or location. Do not immediately escalate to support unless the user needs official confirmation, fees, admission status, or exact branch-specific details.
+
+The official group branch locator lists states including Andhra Pradesh, Karnataka, Telangana, Tamil Nadu, Maharashtra, West Bengal, Haryana, Rajasthan, Madhya Pradesh, Uttar Pradesh, Punjab, Chandigarh, Delhi, and Bihar.
+
+The official long-term IIT-JEE and NEET program page lists campus examples for the 2026 long-term program:
+- Hyderabad: Narsingi Boys, Madhapur Akshara LT, Kondapur Girls
+- Vijayawada: Gudavalli Raman Bhavan-OI, Gayathri Campus Day Scholars
+- Visakhapatnam: Asilmetta Raman Bhavan-2, Peddipalem Boys Residential
+
+Campus and branch availability can change by academic year, board, class, and program. The chatbot must not invent addresses, route availability, phone numbers, seat availability, or branch-specific facilities unless the information is present in approved knowledge files.
